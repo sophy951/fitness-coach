@@ -152,11 +152,11 @@ NUTRITION_LABEL_PROMPT = """\
 
 def _resize_image(image_bytes: bytes) -> bytes:
     """Resize image to save tokens while keeping enough detail."""
-    img = Image.open(BytesIO(image_bytes))
-    img.thumbnail(MAX_IMAGE_SIZE, Image.LANCZOS)
-    buf = BytesIO()
-    img.save(buf, format="JPEG", quality=85)
-    return buf.getvalue()
+    with Image.open(BytesIO(image_bytes)) as img:
+        img.thumbnail(MAX_IMAGE_SIZE, Image.LANCZOS)
+        with BytesIO() as buf:
+            img.save(buf, format="JPEG", quality=85)
+            return buf.getvalue()
 
 
 def _parse_json_response(raw: str) -> dict:
