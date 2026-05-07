@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gc
 import io
 import logging
 from datetime import date, timedelta
@@ -66,11 +67,12 @@ def generate_weight_trend(days: int = 30) -> bytes | None:
     ax1.grid(True, alpha=0.3)
     fig.tight_layout()
 
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", dpi=150)
-    plt.close(fig)
-    buf.seek(0)
-    return buf.read()
+    with io.BytesIO() as buf:
+        fig.savefig(buf, format="png", dpi=120)
+        plt.close(fig)
+        gc.collect()
+        buf.seek(0)
+        return buf.read()
 
 
 def generate_calorie_trend(days: int = 7) -> bytes | None:
@@ -125,8 +127,9 @@ def generate_calorie_trend(days: int = 7) -> bytes | None:
     ax1.grid(True, alpha=0.3, axis="y")
     fig.tight_layout()
 
-    buf = io.BytesIO()
-    fig.savefig(buf, format="png", dpi=150)
-    plt.close(fig)
-    buf.seek(0)
-    return buf.read()
+    with io.BytesIO() as buf:
+        fig.savefig(buf, format="png", dpi=120)
+        plt.close(fig)
+        gc.collect()
+        buf.seek(0)
+        return buf.read()
